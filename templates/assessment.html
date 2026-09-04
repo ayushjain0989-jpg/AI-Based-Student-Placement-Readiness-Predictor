@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>PlacementAI | Student Assessment</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+
+<body>
+
+<!-- ================= NAVBAR ================= -->
+
+<nav class="navbar">
+    <div class="nav-links">
+
+        <a href="/" class="nav-link {% if active_page == 'home' %}active{% endif %}">
+            Home
+        </a>
+
+        <a href="/assessment" class="nav-link {% if active_page == 'assessment' %}active{% endif %}">
+            Assessment
+        </a>
+
+        <a href="/model-performance" class="nav-link {% if active_page == 'model-performance' %}active{% endif %}">
+            Model Performance
+        </a>
+
+        <a href="/history" class="nav-link {% if active_page == 'history' %}active{% endif %}">
+            History
+        </a>
+
+        <a href="/analytics" class="nav-link {% if active_page == 'analytics' %}active{% endif %}">
+            Analytics
+        </a>
+
+        <a href="/about" class="nav-link {% if active_page == 'about' %}active{% endif %}">
+            About
+        </a>
+
+    </div>
+</nav>
+
+
+<!-- ================= ASSESSMENT ================= -->
+
+<section class="assessment-section">
+
+    <div class="assessment-box">
+
+        <!-- HEADER -->
+
+        <div class="assessment-header">
+
+            <p class="section-tag">
+                AI READINESS ASSESSMENT
+            </p>
+
+            <h1>
+                Evaluate Your
+                <span>Placement Readiness</span>
+            </h1>
+
+            <p>
+                Provide accurate information about your academic
+                performance, experience and skills. Our AI model
+                will analyze your profile and generate a personalized
+                placement readiness report.
+            </p>
+
+        </div>
+
+
+        <!-- ================= ERROR MESSAGE ================= -->
+
+        {% if error %}
+
+        <div class="error-message">
+            ⚠️ {{ error }}
+        </div>
+
+        {% endif %}
+
+
+        <!-- PROGRESS -->
+
+        <div class="assessment-progress">
+
+            <div class="progress-info">
+
+                <span>
+                    Assessment Form
+                </span>
+
+                <strong>
+                    Complete all fields
+                </strong>
+
+            </div>
+
+            <div class="progress-track">
+
+                <div class="progress-fill"></div>
+
+            </div>
+
+        </div>
+
+
+        <!-- FORM -->
+
+        <form action="/predict" method="POST">
+
+
+            <!-- ================= STUDENT INFORMATION ================= -->
+
+            <div class="form-section">
+
+                <div class="form-section-header">
+
+                    <div class="form-section-icon">
+                        👤
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            Student Information
+                        </h2>
+
+                        <p>
+                            Basic information about the student.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-grid">
+
+
+                    <!-- NAME -->
+
+                    <div class="form-group">
+
+                        <label for="name">
+                            Student Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            placeholder="Enter your full name"
+                            autocomplete="name"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- GENDER -->
+
+                    <div class="form-group">
+
+                        <label for="gender">
+                            Gender
+                        </label>
+
+                        <select
+                            id="gender"
+                            name="gender"
+                            required
+                        >
+
+                            <option value="">
+                                Select Gender
+                            </option>
+
+                            <option value="Male">
+                                Male
+                            </option>
+
+                            <option value="Female">
+                                Female
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================= ACADEMIC INFORMATION ================= -->
+
+            <div class="form-section">
+
+                <div class="form-section-header">
+
+                    <div class="form-section-icon">
+                        🎓
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            Academic Performance
+                        </h2>
+
+                        <p>
+                            Enter your academic qualifications and
+                            current CGPA.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-grid">
+
+
+                    <!-- 10TH BOARD -->
+
+                    <div class="form-group">
+
+                        <label for="tenth_board">
+                            10th Board
+                        </label>
+
+                        <select
+                            id="tenth_board"
+                            name="tenth_board"
+                            required
+                        >
+
+                            <option value="">
+                                Select Board
+                            </option>
+
+                            <option value="CBSE">
+                                CBSE
+                            </option>
+
+                            <option value="State">
+                                State Board
+                            </option>
+
+                            <option value="ICSE">
+                                ICSE
+                            </option>
+
+                            <option value="Other">
+                                Other
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- 10TH MARKS -->
+
+                    <div class="form-group">
+
+                        <label for="tenth_marks">
+                            10th Marks (%)
+                        </label>
+
+                        <input
+                            type="number"
+                            id="tenth_marks"
+                            name="tenth_marks"
+                            min="0"
+                            max="100"
+                            step="0.01"
+                            placeholder="Example: 85"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- 12TH BOARD -->
+
+                    <div class="form-group">
+
+                        <label for="twelfth_board">
+                            12th Board
+                        </label>
+
+                        <select
+                            id="twelfth_board"
+                            name="twelfth_board"
+                            required
+                        >
+
+                            <option value="">
+                                Select Board
+                            </option>
+
+                            <option value="CBSE">
+                                CBSE
+                            </option>
+
+                            <option value="State">
+                                State Board
+                            </option>
+
+                            <option value="ICSE">
+                                ICSE
+                            </option>
+
+                            <option value="Other">
+                                Other
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- 12TH MARKS -->
+
+                    <div class="form-group">
+
+                        <label for="twelfth_marks">
+                            12th Marks (%)
+                        </label>
+
+                        <input
+                            type="number"
+                            id="twelfth_marks"
+                            name="twelfth_marks"
+                            min="0"
+                            max="100"
+                            step="0.01"
+                            placeholder="Example: 80"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- STREAM -->
+
+                    <div class="form-group full-width">
+
+                        <label for="stream">
+                            Engineering Stream
+                        </label>
+
+                        <select
+                            id="stream"
+                            name="stream"
+                            required
+                        >
+
+                            <option value="">
+                                Select Your Stream
+                            </option>
+
+                            <option value="Computer Science and Engineering">
+                                Computer Science and Engineering
+                            </option>
+
+                            <option value="Information Technology">
+                                Information Technology
+                            </option>
+
+                            <option value="Electronics">
+                                Electronics
+                            </option>
+
+                            <option value="Mechanical">
+                                Mechanical
+                            </option>
+
+                            <option value="Civil">
+                                Civil
+                            </option>
+
+                            <option value="Other">
+                                Other
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- CGPA -->
+
+                    <div class="form-group">
+
+                        <label for="cgpa">
+                            Current CGPA
+                        </label>
+
+                        <input
+                            type="number"
+                            id="cgpa"
+                            name="cgpa"
+                            min="0"
+                            max="10"
+                            step="0.01"
+                            placeholder="Example: 8.2"
+                            required
+                        >
+
+                        <small>
+                            Enter CGPA on a 10-point scale.
+                        </small>
+
+                    </div>
+
+
+                    <!-- BACKLOG -->
+
+                    <div class="form-group">
+
+                        <label for="backlog">
+                            5th Semester Backlog
+                        </label>
+
+                        <select
+                            id="backlog"
+                            name="backlog"
+                            required
+                        >
+
+                            <option value="">
+                                Select
+                            </option>
+
+                            <option value="Yes">
+                                Yes
+                            </option>
+
+                            <option value="No">
+                                No
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================= EXPERIENCE & SKILLS ================= -->
+
+            <div class="form-section">
+
+                <div class="form-section-header">
+
+                    <div class="form-section-icon">
+                        💼
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            Experience & Skills
+                        </h2>
+
+                        <p>
+                            Tell us about your practical experience,
+                            training and communication skills.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-grid">
+
+
+                    <!-- INTERNSHIP -->
+
+                    <div class="form-group">
+
+                        <label for="internship">
+                            Internship Experience
+                        </label>
+
+                        <select
+                            id="internship"
+                            name="internship"
+                            required
+                        >
+
+                            <option value="">
+                                Select
+                            </option>
+
+                            <option value="Yes">
+                                Yes
+                            </option>
+
+                            <option value="No">
+                                No
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- TRAINING -->
+
+                    <div class="form-group">
+
+                        <label for="training">
+                            Technical Training
+                        </label>
+
+                        <select
+                            id="training"
+                            name="training"
+                            required
+                        >
+
+                            <option value="">
+                                Select
+                            </option>
+
+                            <option value="Yes">
+                                Yes
+                            </option>
+
+                            <option value="No">
+                                No
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- PROJECT -->
+
+                    <div class="form-group">
+
+                        <label for="project">
+                            Innovative Project
+                        </label>
+
+                        <select
+                            id="project"
+                            name="project"
+                            required
+                        >
+
+                            <option value="">
+                                Select
+                            </option>
+
+                            <option value="Yes">
+                                Yes
+                            </option>
+
+                            <option value="No">
+                                No
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- TECHNICAL COURSE -->
+
+                    <div class="form-group">
+
+                        <label for="technical_course">
+                            Technical Course
+                        </label>
+
+                        <select
+                            id="technical_course"
+                            name="technical_course"
+                            required
+                        >
+
+                            <option value="">
+                                Select
+                            </option>
+
+                            <option value="Yes">
+                                Yes
+                            </option>
+
+                            <option value="No">
+                                No
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- COMMUNICATION -->
+
+                    <div class="form-group full-width">
+
+                        <label for="communication">
+                            Communication Level
+                        </label>
+
+                        <select
+                            id="communication"
+                            name="communication"
+                            required
+                        >
+
+                            <option value="">
+                                Select Communication Level
+                            </option>
+
+                            <option value="1">
+                                1 - Poor
+                            </option>
+
+                            <option value="2">
+                                2 - Average
+                            </option>
+
+                            <option value="3">
+                                3 - Good
+                            </option>
+
+                            <option value="4">
+                                4 - Excellent
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================= AI NOTICE ================= -->
+
+            <div class="ai-notice">
+
+                <div class="ai-notice-icon">
+                    ✦
+                </div>
+
+                <div>
+
+                    <strong>
+                        AI-Powered Analysis
+                    </strong>
+
+                    <p>
+                        Your profile will be analyzed using machine
+                        learning models. SHAP Explainable AI will
+                        help identify the factors influencing your
+                        prediction.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================= SUBMIT ================= -->
+
+            <button
+                type="submit"
+                class="btn assessment-submit"
+            >
+
+                Analyze My Placement Readiness →
+
+            </button>
+
+
+            <p class="form-note">
+
+                Please make sure all information is accurate before
+                submitting the assessment.
+
+            </p>
+
+
+        </form>
+
+    </div>
+
+</section>
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+    <div class="footer-content">
+
+        <div>
+
+            <div class="logo">
+                Placement<span>AI</span>
+            </div>
+
+            <p>
+                AI-Based Student Placement Readiness Predictor
+            </p>
+
+        </div>
+
+        <div class="footer-links">
+
+            <a href="/">
+                Home
+            </a>
+
+            <a href="/assessment">
+                Assessment
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="footer-bottom">
+
+        <p>
+            © 2026 PlacementAI | B.Tech Project
+        </p>
+
+        <p>
+            Built with AI & Machine Learning
+        </p>
+
+    </div>
+
+</footer>
+
+
+</body>
+</html>

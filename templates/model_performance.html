@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>PlacementAI | Model Performance</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+
+<body>
+
+
+<!-- ================= NAVBAR ================= -->
+
+<nav class="navbar">
+    <div class="nav-links">
+
+        <a href="/" class="nav-link {% if active_page == 'home' %}active{% endif %}">
+            Home
+        </a>
+
+        <a href="/assessment" class="nav-link {% if active_page == 'assessment' %}active{% endif %}">
+            Assessment
+        </a>
+
+        <a href="/model-performance" class="nav-link {% if active_page == 'model-performance' %}active{% endif %}">
+            Model Performance
+        </a>
+
+        <a href="/history" class="nav-link {% if active_page == 'history' %}active{% endif %}">
+            History
+        </a>
+
+        <a href="/analytics" class="nav-link {% if active_page == 'analytics' %}active{% endif %}">
+            Analytics
+        </a>
+
+        <a href="/about" class="nav-link {% if active_page == 'about' %}active{% endif %}">
+            About
+        </a>
+
+    </div>
+</nav>
+
+
+<!-- ================= MAIN ================= -->
+
+<main class="model-page">
+
+
+    <!-- HEADER -->
+
+    <section class="model-header">
+
+        <p class="section-tag">
+            MACHINE LEARNING ANALYSIS
+        </p>
+
+        <h1>
+            Model Performance
+            <span>Comparison</span>
+        </h1>
+
+        <p>
+            Compare the performance of the machine learning models
+            used by PlacementAI to predict student placement readiness.
+        </p>
+
+    </section>
+
+
+    <!-- ================= BEST MODEL ================= -->
+
+    <section class="best-model-card">
+
+        <div class="best-model-icon">
+            🏆
+        </div>
+
+        <div class="best-model-content">
+
+            <p>
+                BEST PERFORMING MODEL
+            </p>
+
+            <h2>
+                {{ best_model.name }}
+            </h2>
+
+            <span>
+                Selected based on the highest F1 Score.
+            </span>
+
+        </div>
+
+        <div class="best-model-score">
+
+            <strong>
+                {{ best_model.f1 }}%
+            </strong>
+
+            <span>
+                F1 Score
+            </span>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= MODEL CARDS ================= -->
+
+    <section class="model-grid">
+
+        {% for model in models %}
+
+        <div class="model-card
+
+            {% if model.name == best_model.name %}
+                best
+            {% endif %}">
+
+            <div class="model-card-header">
+
+                <div>
+
+                    <p>
+                        MACHINE LEARNING MODEL
+                    </p>
+
+                    <h2>
+                        {{ model.name }}
+                    </h2>
+
+                </div>
+
+                {% if model.name == best_model.name %}
+
+                <span class="best-badge">
+                    BEST
+                </span>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- ACCURACY -->
+
+            <div class="metric">
+
+                <div class="metric-info">
+
+                    <span>
+                        Accuracy
+                    </span>
+
+                    <strong>
+                        {{ model.accuracy }}%
+                    </strong>
+
+                </div>
+
+                <div class="metric-track">
+
+                    <div
+                        class="metric-fill"
+                        style="--metric-width: {{ model.accuracy }}%;">
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- PRECISION -->
+
+            <div class="metric">
+
+                <div class="metric-info">
+
+                    <span>
+                        Precision
+                    </span>
+
+                    <strong>
+                        {{ model.precision }}%
+                    </strong>
+
+                </div>
+
+                <div class="metric-track">
+
+                    <div
+                        class="metric-fill"
+                        style="--metric-width: {{ model.precision }}%;">
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- RECALL -->
+
+            <div class="metric">
+
+                <div class="metric-info">
+
+                    <span>
+                        Recall
+                    </span>
+
+                    <strong>
+                        {{ model.recall }}%
+                    </strong>
+
+                </div>
+
+                <div class="metric-track">
+
+                    <div
+                        class="metric-fill"
+                        style="--metric-width: {{ model.recall }}%;">
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- F1 -->
+
+            <div class="metric">
+
+                <div class="metric-info">
+
+                    <span>
+                        F1 Score
+                    </span>
+
+                    <strong>
+                        {{ model.f1 }}%
+                    </strong>
+
+                </div>
+
+                <div class="metric-track">
+
+                    <div
+                        class="metric-fill"
+                        style="--metric-width: {{ model.f1 }}%;">
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ROC AUC -->
+
+            <div class="metric">
+
+                <div class="metric-info">
+
+                    <span>
+                        ROC-AUC
+                    </span>
+
+                    <strong>
+                        {{ model.roc_auc }}%
+                    </strong>
+
+                </div>
+
+                <div class="metric-track">
+
+                    <div
+                        class="metric-fill"
+                        style="--metric-width: {{ model.roc_auc }}%;">
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </section>
+
+
+    <!-- ================= EXPLANATION ================= -->
+
+    <section class="model-explanation">
+
+        <div class="explanation-icon">
+            💡
+        </div>
+
+        <div>
+
+            <h2>
+                Why Compare Multiple Models?
+            </h2>
+
+            <p>
+                PlacementAI evaluates multiple machine learning
+                algorithms rather than relying on a single model.
+                This helps identify the model that provides the
+                strongest predictive performance for the dataset.
+            </p>
+
+            <p>
+                The system compares Accuracy, Precision, Recall,
+                F1 Score and ROC-AUC. The model with the highest
+                F1 Score is selected as the final prediction model.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= ACTIONS ================= -->
+
+    <div class="model-actions">
+
+        <a href="/assessment"
+           class="btn">
+
+            Take Assessment →
+
+        </a>
+
+        <a href="/"
+           class="secondary-btn">
+
+            Back to Home
+
+        </a>
+
+    </div>
+
+
+</main>
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+    <div class="footer-content">
+
+        <div>
+
+            <div class="logo">
+                Placement<span>AI</span>
+            </div>
+
+            <p>
+                AI-Based Student Placement Readiness Predictor
+            </p>
+
+        </div>
+
+        <div class="footer-links">
+
+            <a href="/">
+                Home
+            </a>
+
+            <a href="/assessment">
+                Assessment
+            </a>
+
+            <a href="/model-performance">
+                Model Performance
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="footer-bottom">
+
+        <p>
+            © 2026 PlacementAI | B.Tech Project
+        </p>
+
+        <p>
+            Built with AI & Machine Learning
+        </p>
+
+    </div>
+
+</footer>
+
+
+</body>
+</html>

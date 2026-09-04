@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>AI Placement Report</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     NAVBAR
+====================================================== -->
+
+<nav class="navbar">
+    <div class="nav-links">
+
+        <a href="/" class="nav-link {% if active_page == 'home' %}active{% endif %}">
+            Home
+        </a>
+
+        <a href="/assessment" class="nav-link {% if active_page == 'assessment' %}active{% endif %}">
+            Assessment
+        </a>
+
+        <a href="/model-performance" class="nav-link {% if active_page == 'model-performance' %}active{% endif %}">
+            Model Performance
+        </a>
+
+        <a href="/history" class="nav-link {% if active_page == 'history' %}active{% endif %}">
+            History
+        </a>
+
+        <a href="/analytics" class="nav-link {% if active_page == 'analytics' %}active{% endif %}">
+            Analytics
+        </a>
+
+        <a href="/about" class="nav-link {% if active_page == 'about' %}active{% endif %}">
+            About
+        </a>
+
+    </div>
+</nav>
+
+
+
+<!-- =====================================================
+     MAIN DASHBOARD
+====================================================== -->
+
+<main class="dashboard">
+
+
+    <!-- =================================================
+         DASHBOARD HEADER
+    ================================================== -->
+
+    <div class="dashboard-header">
+
+        <div>
+
+            <p class="dashboard-label">
+                AI PLACEMENT ANALYSIS
+            </p>
+
+
+            <h1>
+                Hello, {{ name }} 👋
+            </h1>
+
+
+            <p>
+                Here is your personalized placement
+                readiness report.
+            </p>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =================================================
+         SCORE CARDS
+    ================================================== -->
+
+    <div class="dashboard-grid">
+
+
+        <!-- =============================================
+             PLACEMENT PROBABILITY
+        ============================================== -->
+
+        <div class="dashboard-card score-card">
+
+
+            <div class="card-heading">
+                Placement Probability
+            </div>
+
+
+            <div class="score-circle"
+                 style="--score: {{ probability }}">
+
+                <div class="score-inner">
+
+                    <strong>
+                        {{ probability }}%
+                    </strong>
+
+                    <span>
+                        Probability
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="status-badge">
+
+
+                {% if probability >= 75 %}
+
+                    🟢 High Readiness
+
+                {% elif probability >= 50 %}
+
+                    🟡 Moderate Readiness
+
+                {% else %}
+
+                    🔴 Needs Improvement
+
+                {% endif %}
+
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =============================================
+             READINESS STATUS
+        ============================================== -->
+
+        <div class="dashboard-card status-card">
+
+
+            <div class="card-heading">
+                Readiness Status
+            </div>
+
+
+            <h2>
+                {{ status }}
+            </h2>
+
+
+            <p class="status-description">
+
+
+                {% if probability >= 75 %}
+
+                    Your profile shows strong placement
+                    readiness. Keep developing your
+                    technical and communication skills.
+
+                {% elif probability >= 50 %}
+
+                    Your profile shows moderate readiness.
+                    Improving the identified skill gaps can
+                    strengthen your placement profile.
+
+                {% else %}
+
+                    Your profile has several areas that
+                    should be improved before participating
+                    in placement drives.
+
+                {% endif %}
+
+
+            </p>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =================================================
+         SHAP EXPLANATION
+    ================================================== -->
+
+    <div class="dashboard-card shap-card">
+
+
+        <div class="section-header">
+
+            <div>
+
+                <span class="section-icon">
+                    🔍
+                </span>
+
+
+                <h2>
+                    Why Did AI Make This Prediction?
+                </h2>
+
+            </div>
+
+
+            <p>
+                These are the factors that had the
+                strongest influence on your prediction.
+            </p>
+
+        </div>
+
+
+
+        {% if shap_data %}
+
+
+            <div class="shap-chart">
+
+
+                {% for item in shap_data %}
+
+
+                    <div class="shap-item">
+
+
+                        <!-- Feature name and value -->
+
+                        <div class="shap-label">
+
+
+                            <span>
+                                {{ item.feature }}
+                            </span>
+
+
+                            <strong>
+
+
+                                {% if item.value >= 0 %}
+
+                                    +
+
+                                {% endif %}
+
+
+                                {{ item.value }}
+
+
+                            </strong>
+
+
+                        </div>
+
+
+
+                        <!-- SHAP bar -->
+
+                        <div class="shap-track">
+
+
+                            <div
+                                class="shap-bar {{ item.direction }}"
+                                style="--bar-width: {{ item.width }}%;"
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                {% endfor %}
+
+
+            </div>
+
+
+
+            <!-- SHAP LEGEND -->
+
+            <div class="legend">
+
+
+                <span>
+
+                    <i class="legend-dot positive"></i>
+
+                    Increases prediction
+
+                </span>
+
+
+                <span>
+
+                    <i class="legend-dot negative"></i>
+
+                    Decreases prediction
+
+                </span>
+
+
+            </div>
+
+
+        {% else %}
+
+
+            <div class="shap-empty">
+
+                <p>
+                    SHAP explanation is currently
+                    unavailable.
+                </p>
+
+            </div>
+
+
+        {% endif %}
+
+
+    </div>
+
+
+
+    <!-- =================================================
+         SKILL GAP + RECOMMENDATIONS
+    ================================================== -->
+
+    <div class="two-column">
+
+
+        <!-- =============================================
+             SKILL GAPS
+        ============================================== -->
+
+        <div class="dashboard-card">
+
+
+            <div class="section-header">
+
+                <div>
+
+                    <span class="section-icon">
+                        ⚠️
+                    </span>
+
+
+                    <h2>
+                        Skills to Improve
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+
+            {% if skills %}
+
+
+                <div class="gap-list">
+
+
+                    {% for skill in skills %}
+
+
+                        <div class="gap-item">
+
+
+                            <span>
+                                {{ skill }}
+                            </span>
+
+
+                            <span class="improve-tag">
+                                Improve
+                            </span>
+
+
+                        </div>
+
+
+                    {% endfor %}
+
+
+                </div>
+
+
+            {% else %}
+
+
+                <div class="success-message">
+
+                    🎉 No major skill gaps detected!
+
+                </div>
+
+
+            {% endif %}
+
+
+        </div>
+
+
+
+        <!-- =============================================
+             RECOMMENDATIONS
+        ============================================== -->
+
+        <div class="dashboard-card">
+
+
+            <div class="section-header">
+
+                <div>
+
+                    <span class="section-icon">
+                        💡
+                    </span>
+
+
+                    <h2>
+                        Personalized Recommendations
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="recommendation-list">
+
+
+                {% for recommendation in recommendations %}
+
+
+                    <div class="recommendation-item">
+
+
+                        <span class="recommendation-number">
+
+                            {{ loop.index }}
+
+                        </span>
+
+
+                        <p>
+
+                            {{ recommendation }}
+
+                        </p>
+
+
+                    </div>
+
+
+                {% endfor %}
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- =================================================
+         ASSESSMENT SUMMARY
+    ================================================== -->
+
+    <div class="dashboard-card profile-card">
+
+
+        <div class="section-header">
+
+            <div>
+
+                <span class="section-icon">
+                    📊
+                </span>
+
+
+                <h2>
+                    Assessment Summary
+                </h2>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="profile-grid">
+
+
+            <!-- CGPA -->
+
+            <div class="profile-item">
+
+                <span>
+                    CGPA
+                </span>
+
+
+                <strong>
+                    {{ data["Cgpa"] }}/10
+                </strong>
+
+            </div>
+
+
+
+            <!-- 10TH MARKS -->
+
+            <div class="profile-item">
+
+                <span>
+                    10th Marks
+                </span>
+
+
+                <strong>
+                    {{ data["10th marks"] }}%
+                </strong>
+
+            </div>
+
+
+
+            <!-- 12TH MARKS -->
+
+            <div class="profile-item">
+
+                <span>
+                    12th Marks
+                </span>
+
+
+                <strong>
+                    {{ data["12th marks"] }}%
+                </strong>
+
+            </div>
+
+
+
+            <!-- COMMUNICATION -->
+
+            <div class="profile-item">
+
+                <span>
+                    Communication
+                </span>
+
+
+                <strong>
+                    {{ data["Communication level"] }}/4
+                </strong>
+
+            </div>
+
+
+
+            <!-- INTERNSHIP -->
+
+            <div class="profile-item">
+
+                <span>
+                    Internship
+                </span>
+
+
+                <strong>
+                    {{ data["Internships(Y/N)"] }}
+                </strong>
+
+            </div>
+
+
+
+            <!-- TRAINING -->
+
+            <div class="profile-item">
+
+                <span>
+                    Training
+                </span>
+
+
+                <strong>
+                    {{ data["Training(Y/N)"] }}
+                </strong>
+
+            </div>
+
+
+
+            <!-- PROJECT -->
+
+            <div class="profile-item">
+
+                <span>
+                    Project
+                </span>
+
+
+                <strong>
+                    {{ data["Innovative Project(Y/N)"] }}
+                </strong>
+
+            </div>
+
+
+
+            <!-- TECHNICAL COURSE -->
+
+            <div class="profile-item">
+
+                <span>
+                    Technical Course
+                </span>
+
+
+                <strong>
+                    {{ data["Technical Course(Y/N)"] }}
+                </strong>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =================================================
+         ACTION BUTTONS
+    ================================================== -->
+
+    <div class="dashboard-actions">
+
+
+        <a href="/assessment"
+           class="btn">
+
+            Take New Assessment →
+
+        </a>
+
+
+        <a href="/"
+           class="secondary-btn">
+
+            Back to Home
+
+        </a>
+
+
+    </div>
+
+
+</main>
+
+
+
+<!-- =====================================================
+     FOOTER
+====================================================== -->
+
+<footer>
+
+    <p>
+
+        PlacementAI • AI-Based Student Placement
+        Readiness Predictor
+
+    </p>
+
+</footer>
+
+
+</body>
+
+</html>
